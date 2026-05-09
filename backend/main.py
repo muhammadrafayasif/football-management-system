@@ -1,6 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, status
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from config import FRONTEND_URL
+from config import FRONTEND_URL, API_PASSWORD
 from routes import persons, players, agents, clubs, managers, sponsors, competitions, contracts, transfers, relationships
 
 app = FastAPI(
@@ -8,6 +9,28 @@ app = FastAPI(
     description="REST API for managing football transfers, contracts, and teams",
     version="1.0.0"
 )
+
+
+@app.middleware("http")
+async def require_api_password(request: Request, call_next):
+    # Allow health and root and docs endpoints without password for convenience
+    allowed_paths = {"/", "/health", "/docs", "/openapi.json", "/redoc", "/favicon.ico"}
+    if request.url.path in allowed_paths:
+        return await call_next(request)
+
+    # Allow CORS preflight through
+    if request.method == "OPTIONS":
+        return await call_next(request)
+
+    # If no API_PASSWORD configured, skip check (developer convenience)
+    if not API_PASSWORD:
+        return await call_next(request)
+
+    header_pw = request.headers.get("x-api-password") or request.headers.get("X-API-PASSWORD")
+    if header_pw != API_PASSWORD:
+        return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED, content={"detail": "Invalid API password"})
+
+    return await call_next(request)
 
 # CORS middleware setup
 app.add_middleware(

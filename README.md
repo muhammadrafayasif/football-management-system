@@ -43,3 +43,11 @@ The frontend is a single-page application that fetches data from the API, shows 
 ## Database
 
 The data model is defined in `migration.sql` and is centered around football operations such as player profiles, club records, contracts, sponsorships, and transfers.
+
+## API password
+
+This project supports a very simple password gate for the backend. To enable it, create a `.env` file in the `backend/` folder with the following value:
+
+```
+API_PASSWORD=your-secret-password
+```

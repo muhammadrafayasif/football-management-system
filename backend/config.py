@@ -10,3 +10,6 @@ FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
 
 # Supabase REST API base URL
 SUPABASE_REST_URL = f"{SUPABASE_URL}/rest/v1"
+
+# Simple API password used to protect all endpoints when set (empty = disabled)
+API_PASSWORD = os.getenv("API_PASSWORD", "")

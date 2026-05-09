@@ -1,5 +1,4 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
-
 const formatFieldName = (value: string) =>
   value
     .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
@@ -177,9 +176,14 @@ export interface Contract {
 
 class APIClient {
   private baseUrl: string
+  private password?: string | null
 
   constructor(baseUrl: string = API_BASE_URL) {
     this.baseUrl = baseUrl
+  }
+
+  setPassword(pw?: string | null) {
+    this.password = pw ?? null
   }
 
   private async request(method: string, endpoint: string, body?: unknown) {
@@ -195,9 +199,24 @@ class APIClient {
       options.body = JSON.stringify(body)
     }
 
+    // Attach API password header when set
+    if (this.password) {
+      ;(options.headers as Record<string, string>)['x-api-password'] = this.password
+    }
+
     const response = await fetch(url, options)
 
     if (!response.ok) {
+      // If request is unauthorized, clear saved password and notify app to re-prompt
+      if (response.status === 401) {
+        this.password = null
+        try {
+          window.dispatchEvent(new CustomEvent('fm:auth:invalid'))
+        } catch (e) {
+          // ignore
+        }
+      }
+
       const error = await response.json().catch(() => null)
       throw new Error(formatApiError(error, response.status))
     }

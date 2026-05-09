@@ -37,6 +37,18 @@ function App() {
   const [playerIndex, setPlayerIndex] = useState(0)
   const [notice, setNotice] = useState('Loading data from server...')
   const [isLoading, setIsLoading] = useState(true)
+  const [passwordSet, setPasswordSet] = useState(false)
+  const [passwordValue, setPasswordValue] = useState('')
+  useEffect(() => {
+    const handler = () => {
+      setPasswordSet(false)
+      setPasswordValue('')
+      setIsLoading(false)
+      setNotice('Invalid API password — please enter it again')
+    }
+    window.addEventListener('fm:auth:invalid', handler as EventListener)
+    return () => window.removeEventListener('fm:auth:invalid', handler as EventListener)
+  }, [])
   const [showAddPlayerForm, setShowAddPlayerForm] = useState(false)
   const [showAddClubForm, setShowAddClubForm] = useState(false)
   const [showAddAgentForm, setShowAddAgentForm] = useState(false)
@@ -53,7 +65,7 @@ function App() {
   const [clubSwipeDirection, setClubSwipeDirection] = useState<SwipeDirection>(null)
   const [playerSwipeDirection, setPlayerSwipeDirection] = useState<SwipeDirection>(null)
 
-  // Fetch data on mount
+  // Fetch data when password is set
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -91,8 +103,17 @@ function App() {
         setIsLoading(false)
       }
     }
+
+    if (!passwordSet) {
+      setIsLoading(false)
+      setNotice('Please enter API password')
+      return
+    }
+
+    setIsLoading(true)
+    setNotice('Loading data from server...')
     loadData()
-  }, [])
+  }, [passwordSet])
 
   const selectedClub = clubs.length > 0 ? clubs[clubIndex] : null
   const selectedPlayer = players.length > 0 ? players[playerIndex] : null
@@ -143,6 +164,16 @@ function App() {
     setManagers(managersData)
     setContracts(contractsData)
     setTransfers(transfersData)
+  }
+
+  const handlePasswordSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!passwordValue) return
+    apiClient.setPassword(passwordValue)
+    setPasswordSet(true)
+    setPasswordValue('')
+    setNotice('Loading data...')
+    setIsLoading(true)
   }
 
   const animateSwipe = (setter: (value: SwipeDirection) => void, direction: SwipeDirection) => {
@@ -617,6 +648,28 @@ function App() {
 
   return (
     <div className="app-shell">
+      {!passwordSet && (
+        <div className="password-lockscreen" role="dialog" aria-modal="true" aria-labelledby="password-title">
+          <div className="password-lockscreen-card" onClick={(e) => e.stopPropagation()}>
+            <h3 id="password-title">Enter API Password</h3>
+            <p>Provide the API password to access the management system</p>
+            <form onSubmit={handlePasswordSubmit} style={formStyles.form}>
+              <input
+                autoFocus
+                type="password"
+                value={passwordValue}
+                onChange={(e) => setPasswordValue(e.target.value)}
+                placeholder="API Password"
+                required
+              />
+              <div style={formStyles.buttonGroup}>
+                <button type="submit">Submit</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      <div className={`app-content ${passwordSet ? 'is-unlocked' : 'is-locked'}`} aria-hidden={!passwordSet}>
       <header className="hero-header">
         <p className="eyebrow">Football Management System</p>
         <h1>League Control Room</h1>
@@ -1163,6 +1216,7 @@ function App() {
           </div>
         </div>
       )}
+      </div>
     </div>
   )
 }

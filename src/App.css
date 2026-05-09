@@ -9,6 +9,67 @@
   animation: rise-in 650ms ease;
 }
 
+.app-content {
+  transition: opacity 260ms ease, transform 260ms ease, filter 260ms ease;
+  will-change: opacity, transform, filter;
+}
+
+.app-content.is-locked {
+  opacity: 0;
+  transform: translateY(10px) scale(0.985);
+  filter: blur(14px);
+  pointer-events: none;
+  user-select: none;
+}
+
+.app-content.is-unlocked {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+  animation: dashboard-fade-in 420ms ease;
+}
+
+.password-lockscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+  background:
+    radial-gradient(circle at top left, rgba(255, 206, 90, 0.18), transparent 32%),
+    radial-gradient(circle at bottom right, rgba(12, 40, 18, 0.46), transparent 36%),
+    rgba(5, 12, 8, 0.82);
+  backdrop-filter: blur(10px);
+}
+
+.password-lockscreen-card {
+  width: min(440px, calc(100vw - 2rem));
+  padding: 1.4rem;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: linear-gradient(180deg, rgba(245, 250, 240, 0.98), rgba(223, 236, 217, 0.96));
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.32);
+  color: #14331f;
+  animation: lock-card-pop 320ms ease;
+}
+
+.password-lockscreen-card h3 {
+  margin: 0 0 0.4rem;
+  color: #12321d;
+}
+
+.password-lockscreen-card p {
+  margin: 0 0 1rem;
+  color: #35543a;
+}
+
+.password-lockscreen-card input {
+  border: 1px solid rgba(22, 63, 34, 0.22);
+  border-radius: 14px;
+  background: #fff;
+}
+
 .hero-header {
   padding: 1rem;
   border-radius: 18px;
@@ -360,6 +421,28 @@
   from {
     opacity: 0;
     transform: translateY(14px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes dashboard-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.992);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes lock-card-pop {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
   }
   to {
     opacity: 1;
