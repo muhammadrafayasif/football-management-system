@@ -1,73 +1,45 @@
-# React + TypeScript + Vite
+<p align="center">
+	<img src="public/favicon.svg" alt="Football Management System logo" width="96" />
+</p>
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Football Management System
 
-Currently, two official plugins are available:
+<p align="center">
+  <img src="https://img.shields.io/badge/Semester%20Project-Database%20Management%20Systems-white?style=for-the-badge&logo=postgresql" alt="Semester Project - Object Oriented Programming">
+</p>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Overview
 
-## React Compiler
+Football Management System is a full-stack web application for managing a football club database. It combines a React + Vite frontend with a FastAPI backend connected to Supabase PostgreSQL, letting users browse and maintain football-related records from a single interface.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## What the application does
 
-## Expanding the ESLint configuration
+- Loads live data from the backend when the app starts.
+- Displays summary counts for clubs, players, agents, sponsors, competitions, managers, contracts, and transfers.
+- Lets users create, edit, and delete core records such as clubs and players.
+- Supports football administration workflows including contracts, sponsorships, and transfers.
+- Organizes the database into related entities such as people, clubs, managers, agents, sponsors, and competitions.
+- Keeps the frontend synchronized with the database through API calls.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Main areas
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Clubs: club profile, stadium details, budget, and squad management.
+- Players: player identity, position, physical details, value, and club assignment.
+- Agents: agency details, commission rate, and represented clients.
+- Sponsors: company profiles and sponsorship information.
+- Competitions: league and tournament records.
+- Managers: coaching details and club links.
+- Contracts: employment and sponsorship contracts with dates and status.
+- Transfers: player movement history and transfer fees.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Backend
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+The backend exposes REST endpoints for each entity and uses CORS to allow the frontend to communicate with the API. It also provides a health check and basic API metadata.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Frontend
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+The frontend is a single-page application that fetches data from the API, shows database summaries, and provides forms and navigation for managing football records.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Database
+
+The data model is defined in `migration.sql` and is centered around football operations such as player profiles, club records, contracts, sponsorships, and transfers.
