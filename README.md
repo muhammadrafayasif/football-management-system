@@ -3,10 +3,13 @@
 </p>
 
 # Football Management System
-
 <p align="center">
   <img src="https://img.shields.io/badge/Semester%20Project-Database%20Management%20Systems-white?style=for-the-badge&logo=postgresql" alt="Semester Project - Object Oriented Programming">
 </p>
+<img width="1017" height="840" alt="Screenshot 2026-05-24 184642" src="https://github.com/user-attachments/assets/91607825-d08a-4abe-a47b-b4c0c7ae6d1c" />
+
+
+
 
 ## Overview
 
